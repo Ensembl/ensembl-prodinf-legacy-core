@@ -40,6 +40,7 @@ Usage
 #####
 
 Assuming that the `ensembl_prodinf` package is on your pythonpath, and you also have a suitable `celery_app_config.py` module, you can submit celery tasks from the `ensembl_prodinf` package::
+
   from ensembl_prodinf.tasks import email_when_complete
   import time
   results = email_when_complete.delay("http://ens-prod-1.ebi.ac.uk:5000/results_email/1","dstaines@ebi.ac.uk")
