@@ -56,7 +56,7 @@ To Submit the job via the REST enpoint for Ensembl
   LIVE=$(mysql-ensembl-mirror details url)
   STAGING=$(mysql-ens-sta-1 details url)
   PRODUCTION=$(mysql-ens-sta-1 details url)
-  ENDPOINT=http://ens-prod-1.ebi.ac.uk:8000/hc/
+  ENDPOINT=http://eg-prod-01.ebi.ac.uk:7000/hc/
   DATA_FILE_PATH=/nfs/panda/ensembl/production/ensemblftp/data_files/
   RELEASE=91
   TAG=my_hc_run
@@ -79,7 +79,7 @@ To Submit the job via the REST enpoint for EG
   LIVE=$(mysql-eg-publicsql details url)
   STAGING=$(mysql-eg-staging-1 details url)
   PRODUCTION=$(mysql-eg-pan-prod details url)
-  ENDPOINT=http://ens-prod-1.ebi.ac.uk:7000/hc/
+  ENDPOINT=http://eg-prod-01.ebi.ac.uk:7000/hc/
   DATA_FILE_PATH=/nfs/panda/ensembl/production/ensemblftp/data_files/
   TAG=my_hc_run
   
@@ -154,11 +154,11 @@ The script accept the following arguments:
 Check job status
 #####
 
-You can check job status either on the production interface: `http://ens-prod-1.ebi.ac.uk:8000/#!/hc_list` or `http://eg-prod-01.ebi.ac.uk:7000/#!/hc_list` for EG
+You can check job status either on the production interface: `http://eg-prod-01.ebi.ac.uk:7000/#!/hc_list` or `http://eg-prod-01.ebi.ac.uk:7000/#!/hc_list` for EG
 
 or using the Python REST API:
 
-  ensembl_prodinf/db_copy_client.py --action list --uri http://ens-prod-1.ebi.ac.uk:8001
+  ensembl_prodinf/db_copy_client.py --action list --uri http://eg-prod-01.ebi.ac.uk:8001
   
   or for EG:
    
@@ -168,7 +168,7 @@ Collate results
 #####
 If you have run the healthchecks on a large number of databases, you can collate all the results in one file using the tag:
 ::
-  python ensembl-prodinf-core/ensembl_prodinf/hc_client.py --uri http://ens-prod-1.ebi.ac.uk:8000/hc/ --action collate --tag "my_hc_run" --output_file results.json
+  python ensembl-prodinf-core/ensembl_prodinf/hc_client.py --uri http://eg-prod-01.ebi.ac.uk:7000/hc/ --action collate --tag "my_hc_run" --output_file results.json
 
 Convert results in readable form
 #####
