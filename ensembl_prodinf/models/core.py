@@ -17,7 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
-__all__ = ['CoreInstance' ,'get_coredb_assembly']
+__all__ = ['CoreInstance' ,'get_coredb_assembly','get_coredb_genebuild']
 
 class Meta(Base):
     __tablename__ = 'meta'
@@ -48,6 +48,25 @@ class CoreInstance:
         finally:
                 s.close()
 
+    def get_core_species_genebuild(self):
+        """Retrieve a species genebuild.version or (genebuild.start_date/genebuild.last_geneset_update) value from the core database meta table"""
+        s = Session()
+        try:
+            MetaGenebuildVersion = s.query(Meta).filter(Meta.meta_key == 'genebuild.version').first()
+            if MetaGenebuildVersion:
+                return MetaGenebuildVersion.meta_value
+            else:
+                MetaGenebuildStartDate = s.query(Meta).filter(Meta.meta_key == 'genebuild.start_date').first()
+                MetaGenebuildLastGenebuildUpdate = s.query(Meta).filter(Meta.meta_key == 'genebuild.last_geneset_update').first()
+                if MetaGenebuildStartDate and MetaGenebuildLastGenebuildUpdate:
+                    return str(MetaGenebuildStartDate.meta_value) + '/' + str(MetaGenebuildLastGenebuildUpdate.meta_value)
+        finally:
+                s.close()
+
 def get_coredb_assembly(uri):
     inst = CoreInstance(uri)
     return inst.get_core_species_assembly()
+
+def get_coredb_genebuild(uri):
+    inst = CoreInstance(uri)
+    return inst.get_core_species_genebuild()

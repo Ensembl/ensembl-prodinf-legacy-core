@@ -26,8 +26,8 @@ from sqlalchemy_utils.functions import database_exists, drop_database
 from sqlalchemy.engine.url import make_url
 from .utils import send_email
 from .models.compara import check_grch37
-from .models.core import get_coredb_assembly
-from .models.metadata import get_metadb_assembly, get_previous_assembly_db_list
+from .models.core import get_coredb_assembly, get_coredb_genebuild
+from .models.metadata import get_metadb_assembly, get_previous_assembly_db_list, get_metadb_genome
 import handover_config as cfg
 import uuid
 import re
@@ -76,8 +76,11 @@ def handover_database(spec):
     if db_type not in db_types_list:
         get_logger().error("Handover failed, " + spec['src_uri'] + " has been handed over after deadline. Please contact the Production team")
         raise ValueError(spec['src_uri'] + " has been handed over after the deadline. Please contact the Production team")
-    #Check if this is a new assembly
-    spec = check_new_assembly(spec,cfg.metadata_uri,db_prefix,release,db_type)
+    if 'collection' not in db_prefix and db_type == 'core':
+        #Check if this is a new genebuild
+        spec = check_new_genebuild(spec,cfg.metadata_uri,db_prefix,release,db_type)
+        #Check if this is a new assembly
+        spec = check_new_assembly(spec,cfg.metadata_uri,db_prefix,release,db_type)
     #Get database hc group and compara_uri
     (groups,compara_uri) = hc_groups(db_type,db_prefix,spec['src_uri'])
     #Check to which staging server the database need to be copied to
@@ -176,16 +179,27 @@ def check_new_assembly(spec,metadata_uri,species,release,db_type):
     """
     metadata_assembly = get_metadb_assembly(metadata_uri,species,release)
     if metadata_assembly:
-        if db_type == 'core':
-            if get_coredb_assembly(spec['src_uri']).meta_value != metadata_assembly.assembly_default:
-                get_logger().info(str(species) + ' has a new assembly')
-                spec['type']='new_assembly'
-                old_assembly_databases_list = get_previous_assembly_db_list(metadata_uri,species,release)
-                if old_assembly_databases_list:
-                    spec['old_assembly_dbs'] = old_assembly_databases_list
+        if get_coredb_assembly(spec['src_uri']).meta_value != metadata_assembly.assembly_default:
+            get_logger().info(str(species) + ' has a new assembly')
+            spec['type']='new_assembly'
+            old_assembly_databases_list = get_previous_assembly_db_list(metadata_uri,species,release)
+            if old_assembly_databases_list:
+                spec['old_assembly_dbs'] = old_assembly_databases_list
     else:
         spec['type']='new_assembly'
         get_logger().info(str(species) + ' has a new assembly')
+    return spec
+
+def check_new_genebuild(spec,metadata_uri,species,release,db_type):
+    """Check the core database genebuild.version or (genebuild.start_date/genebuild.last_geneset_update) value and compare it with what we have in the Metadata database
+    if the Genebuild is the same, all good, nothing to do here
+    if the Genebuild is different, make sure that we update the handover type
+    """
+    metadata_genome = get_metadb_genome(metadata_uri,species,release)
+    if metadata_genome:
+        if get_coredb_genebuild(spec['src_uri']) != metadata_genome.genebuild:
+            get_logger().info(str(species) + ' has a new genebuild')
+            spec['type']='new_genebuild'
     return spec
 
 def submit_hc(spec, groups, compara_uri, staging_uri):
@@ -238,8 +252,9 @@ def drop_old_assembly_databases(spec):
     if 'old_assembly_dbs' in spec:
         for database in spec['old_assembly_dbs']:
             db_uri = spec['staging_uri'] + database
-            get_logger().info("Dropping " + str(db_uri))
-            drop_database(db_uri)
+            if database_exists(db_uri):
+                get_logger().info("Dropping " + str(db_uri))
+                drop_database(db_uri)
     else:
         return
 

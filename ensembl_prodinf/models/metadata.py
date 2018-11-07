@@ -20,7 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 metadata = Base.metadata
 
-__all__ = ['MetadataInstance' ,'get_metadb_assembly', 'get_previous_assembly_db_list']
+__all__ = ['MetadataInstance' ,'get_metadb_assembly', 'get_previous_assembly_db_list', 'get_metadb_genome']
 
 
 class LoadAble(object):
@@ -421,6 +421,10 @@ def get_metadb_assembly(uri,species,release):
     inst = MetadataInstance(uri)
     return inst.get_genome_assembly(species,release)
 
+def get_metadb_genome(uri,species,release):
+    inst = MetadataInstance(uri)
+    return inst.get_genome_from_organism_release(species,release)
+    
 def get_previous_assembly_db_list(uri,species,release):
     inst = MetadataInstance(uri)
     return inst.get_genome_database_list(species,release)
