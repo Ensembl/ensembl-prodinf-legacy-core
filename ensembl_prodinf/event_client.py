@@ -77,8 +77,9 @@ if __name__ == '__main__':
     client = EventClient(args.uri)
             
     if args.action == 'submit':
-        job_id = client.submit_job(json.loads(args.event))
-        logging.info('Job submitted with ID '+str(job_id))
+        results = client.submit_job(json.loads(args.event))
+        for process in results['processes']:
+            logging.info('Job submitted for process: '+str(process['process'])+' with ID '+str(process['job_id']))
     
     elif args.action == 'retrieve':
         job = client.retrieve_job(args.process, args.job_id)
@@ -89,7 +90,7 @@ if __name__ == '__main__':
             client.print_job(job)
     
     elif args.action == 'delete':
-        client.delete_job(args.job_id)
+        client.delete_job(args.process,args.job_id)
         
     elif args.action == 'events':
         logging.info(client.events())

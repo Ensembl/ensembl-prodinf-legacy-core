@@ -28,7 +28,7 @@ class RestClient(object):
         logging.debug(payload)
         r = requests.post(self.jobs.format(self.uri), json=payload)
         r.raise_for_status()
-        return r.json()['job_id']
+        return r.json()
     
     def delete_job(self, job_id, kill=False):
         """

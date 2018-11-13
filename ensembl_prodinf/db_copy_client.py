@@ -133,14 +133,14 @@ if __name__ == '__main__':
 
         if args.input_file == None:
             logging.info("Submitting " + args.source_db_uri + "->" + args.target_db_uri)
-            job_id = client.submit_job(args.source_db_uri, args.target_db_uri, args.only_tables, args.skip_tables, args.update, args.drop, args.email)
-            logging.info('Job submitted with ID '+str(job_id))
+            job = client.submit_job(args.source_db_uri, args.target_db_uri, args.only_tables, args.skip_tables, args.update, args.drop, args.email)
+            logging.info('Job submitted with ID '+str(job['job_id']))
         else:
             for line in args.input_file:
                 uris = line.split()
                 logging.info("Submitting " + uris[0] + "->" + uris[1])
-                job_id = client.submit_job(uris[0], uris[1], args.only_tables, args.skip_tables, args.update, args.drop, args.email)
-                logging.info('Job submitted with ID '+str(job_id))
+                job = client.submit_job(uris[0], uris[1], args.only_tables, args.skip_tables, args.update, args.drop, args.email)
+                logging.info('Job submitted with ID '+str(job['job_id']))
     
     elif args.action == 'retrieve':
     
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         logging.info("Job " + str(args.job_id) + " was successfully deleted")
 
     elif args.action == 'email':
-        client.job_email(args.job_id, args.email)
+        client.retrieve_job_email(args.job_id, args.email)
 
     elif args.action == 'kill_job':
         client.kill_job(args.job_id)

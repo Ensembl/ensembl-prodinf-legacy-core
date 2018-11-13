@@ -166,9 +166,9 @@ def check_staging_server(spec,db_type,db_prefix,assembly):
 
 def submit_hc(spec, groups, compara_uri, staging_uri):
     """Submit the source database for healthchecking. Returns a celery job identifier"""
-    hc_job_id = hc_client.submit_job(spec['src_uri'], cfg.production_uri, compara_uri, staging_uri, cfg.live_uri, None, groups, cfg.data_files_path, None, spec['handover_token'])
-    spec['hc_job_id'] = hc_job_id
-    task_id = process_checked_db.delay(hc_job_id, spec)
+    hc_job = hc_client.submit_job(spec['src_uri'], cfg.production_uri, compara_uri, staging_uri, cfg.live_uri, None, groups, cfg.data_files_path, None, spec['handover_token'])
+    spec['hc_job_id'] = hc_job['job_id']
+    task_id = process_checked_db.delay(hc_job['job_id'], spec)
     get_logger().debug("Submitted DB for checking as " + str(task_id))
     return task_id
 
@@ -212,9 +212,9 @@ Please see %s
 
 def submit_copy(spec):
     """Submit the source database for copying to the target. Returns a celery job identifier"""    
-    copy_job_id = db_copy_client.submit_job(spec['src_uri'], spec['tgt_uri'], None, None, False, True, None)
-    spec['copy_job_id'] = copy_job_id
-    task_id = process_copied_db.delay(copy_job_id, spec)    
+    copy_job = db_copy_client.submit_job(spec['src_uri'], spec['tgt_uri'], None, None, False, True, None)
+    spec['copy_job_id'] = copy_job['job_id']
+    task_id = process_copied_db.delay(copy_job['job_id'], spec)    
     get_logger().debug("Submitted DB for copying as " + str(task_id))
     return task_id
 
@@ -250,9 +250,9 @@ Please see %s
 
 def submit_metadata_update(spec):
     """Submit the source database for copying to the target. Returns a celery job identifier."""
-    metadata_job_id = metadata_client.submit_job( spec['tgt_uri'], None, None, None, None, spec['contact'], spec['type'], spec['comment'], 'Handover', None)
-    spec['metadata_job_id'] = metadata_job_id
-    task_id = process_db_metadata.delay(metadata_job_id, spec)
+    metadata_job = metadata_client.submit_job( spec['tgt_uri'], None, None, None, None, spec['contact'], spec['type'], spec['comment'], 'Handover', None)
+    spec['metadata_job_id'] = metadata_job['job_id']
+    task_id = process_db_metadata.delay(metadata_job['job_id'], spec)
     get_logger().debug("Submitted DB for metadata loading " + str(task_id))
     return task_id
 

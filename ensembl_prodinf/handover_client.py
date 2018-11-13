@@ -62,8 +62,8 @@ if __name__ == '__main__':
             "comment" : args.description
             }
         logging.debug(spec)
-        job_id = client.submit_job(spec)
-        logging.info('Job submitted with transaction ID '+str(job_id))
+        job = client.submit_job(spec)
+        logging.info('Job submitted with transaction ID '+str(job['job_id']))
     
     else:
         logging.error("Action "+args.action+" not supported")

@@ -184,8 +184,8 @@ if __name__ == '__main__':
     client = HcClient(args.uri)
             
     if args.action == 'submit':
-        job_id = client.submit_job(args.db_uri, args.production_uri, args.compara_uri, args.staging_uri, args.live_uri, args.hc_names, args.hc_groups, args.data_files_path, args.email, args.tag)
-        logging.info('Job submitted with ID '+str(job_id))
+        job = client.submit_job(args.db_uri, args.production_uri, args.compara_uri, args.staging_uri, args.live_uri, args.hc_names, args.hc_groups, args.data_files_path, args.email, args.tag)
+        logging.info('Job submitted with ID '+str(job['job_id']))
     
     elif args.action == 'retrieve':
         job = client.retrieve_job(args.job_id)
