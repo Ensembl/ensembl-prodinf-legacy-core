@@ -1,6 +1,9 @@
 import re
 import subprocess
-from urlparse import urlparse  # Python 3: from urllib.parse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 
 db_netloc_re = re.compile(r'^.+@.+:\d+$')
