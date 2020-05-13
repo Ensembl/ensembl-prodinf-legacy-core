@@ -21,7 +21,7 @@ from ensembl_prodinf.handover_celery_app import app
 from ensembl_prodinf.hc_client import HcClient
 from ensembl_prodinf.db_copy_client import DbCopyClient
 from ensembl_prodinf.metadata_client import MetadataClient
-from ensembl_prodinf.event_client import EventClient
+from ensembl_prodinf.event_client import EventClient, QrpClient
 from ensembl.datacheck.client import DatacheckClient
 from sqlalchemy_utils.functions import database_exists, drop_database
 from sqlalchemy.engine.url import make_url
@@ -40,7 +40,9 @@ hc_client = HcClient(cfg.hc_uri)
 db_copy_client = DbCopyClient(cfg.copy_uri)
 metadata_client = MetadataClient(cfg.meta_uri)
 event_client = EventClient(cfg.event_uri)
+qrp_client = QrpClient(cfg.event_uri)
 dc_client = DatacheckClient(cfg.dc_uri)
+
 
 db_types_list = [i for i in cfg.allowed_database_types.split(",")]
 allowed_divisions_list = [i for i in cfg.allowed_divisions.split(",")]
@@ -401,7 +403,17 @@ Please see %s
         spec['progress_complete']=3
         #get_logger().info("Metadata load complete, submitting event")
         #submit_event(spec,result)
+        #qrp job submit
+        submit_qrp_event(spec, result)   
     return
+
+def submit_qrp_event(spec, result):
+    """QRP & Event job submit """
+    try:
+        qrp_client.submit_job({"spec": spec, "event": result })
+    except Exception as e :
+        get_logger().info("Unable to submit qrp/event for handover id: " + spec['handover_token'] + "Error: " + str(e))
+
 
 def submit_event(spec,result):
     """Submit an event"""

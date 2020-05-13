@@ -5,6 +5,7 @@ import logging
 import requests
 import json
 from ensembl_prodinf.rest_client import RestClient
+from ensembl_prodinf.rest_client import retry_requests
 
 class EventClient(RestClient):
 
@@ -52,6 +53,57 @@ class EventClient(RestClient):
         r = requests.get(self.uri+'events')
         r.raise_for_status()
         return r.json()
+
+
+class QrpClient(RestClient):
+
+    """
+    Client to update the status of production pipeline in Elastic Search
+    """
+    def __init__(self, uri):
+        self.uri = uri
+
+    @retry_requests
+    def submit_job(self, spec):
+        """
+        Submit job to event app
+        Arguments:
+          spec : payload similar to handover
+        """
+        logging.info("Submitting job")
+        uri = self.uri + '/qrp/submit/job'
+        r = requests.post(uri, json=spec)
+        #r.raise_for_status()
+        return r.json
+
+
+    @retry_requests
+    def insert_record(self, spec):
+        """
+        Insert new record into ES
+        Arguments:
+          spec : payload with pipeline flow 
+        """
+        logging.info("Submitting job")
+        uri = self.uri + '/qrp/jobs'
+        r = requests.post(uri, json=spec)
+        #r.raise_for_status()
+        return r.json
+
+    @retry_requests
+    def update_record(self, spec):
+        """
+        update a record
+        Arguments:
+          spec : spec
+        """
+        uri = self.uri + '/qrp/jobs'
+        r = requests.put(uri, json=spec)
+        #r.raise_for_status()
+        return r.json
+
+
+
 
 
 if __name__ == '__main__':
