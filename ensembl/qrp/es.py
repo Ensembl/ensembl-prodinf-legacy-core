@@ -23,5 +23,4 @@ class PipelineStatus():
             res= self.es.get(index='pipelines',doc_type='jobs',id=spec['handover_token'])
             return {'status': True, 'error': ''}
         except Exception as e :
-            print(str(e))
             return {'status': False, 'error': str(e)}  
