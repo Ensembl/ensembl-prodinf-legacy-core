@@ -70,10 +70,13 @@ class QrpClient(RestClient):
         Arguments:
           spec : payload similar to handover
         """
-        logging.info("Submitting job")
-        uri = self.uri + '/qrp/submit/job'
-        r = requests.post(uri, json=spec)
-        #r.raise_for_status()
+        try:
+            logging.info("Submitting job")
+            uri = self.uri + '/qrp/submit/job'
+            r = requests.post(uri, json=spec)
+            r.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            print(str(err))
         return r.json
 
 
@@ -97,9 +100,13 @@ class QrpClient(RestClient):
         Arguments:
           spec : spec
         """
-        uri = self.uri + '/qrp/jobs'
-        r = requests.put(uri, json=spec)
-        #r.raise_for_status()
+        try: 
+            uri = self.uri + '/qrp/jobs'
+            r = requests.put(uri, json=spec)
+            r.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            print(str(err))
+               
         return r.json
 
 

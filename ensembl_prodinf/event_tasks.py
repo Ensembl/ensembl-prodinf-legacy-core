@@ -90,7 +90,7 @@ def prepare_payload(spec):
     src_url = make_url(spec['src_uri'])
     (db_prefix, db_type, release, assembly) = parse_db_infos(src_url.database)
     if db_type == 'core':
-       return payload['core']   
+       return payload['core'] 
     
     return {} 
 
@@ -104,6 +104,7 @@ def initiate_pipeline(spec, event={}, rerun=False):
 
          spec['status'] = True
          spec['completed_jobs'] = []
+         spec['current_job'] = {}
          spec['error'] = ''
          spec['job_status'] = 'inprogress'
          if rerun:
@@ -123,7 +124,6 @@ def monitor_process_pipeline(self, spec):
      """Process the each pipeline object declared in flow"""
      try:
          if  spec.get('status', False):
-
              if len(spec.get('flow',[])) > 0:
                  job = spec['flow'].pop(0)
                  spec['current_job'] = job
@@ -131,26 +131,19 @@ def monitor_process_pipeline(self, spec):
                  #pipeline_status.insert_record(spec)
                  qrp_clinet.update_record(spec)
                  qrp_run_pipeline.delay(job, spec)
-                 #update db with hanover token
 
              elif  len(spec.get('flow', [])) == 0:
-                 print('No more jobs to run for: ', spec['handover_token'])
                  spec['job_status'] = 'done'
-                 #pipeline_status.insert_record(spec)
+                 spec['current_job'] = {}  
                  qrp_clinet.update_record(spec)
-                 #update handover token with job status done 
          else :
              spec['job_status'] = 'error'
-             print('job failed for ', spec['handover_token'])
-             print(spec['current_job'])
              qrp_clinet.insert_record(spec)
 
      except Exception as e :
-         print(str(e))
          spec['job_status'] = 'error'
          spec['error'] = str(e)
          qrp_clinet.update_record(spec)
-
      return True
 
 @app.task(bind=True)
@@ -177,7 +170,7 @@ def qrp_run_pipeline(self, run_job, global_spec):
              if beekeeper_status['status'] and beekeeper_status['value'] == 'NO_WORK':
                  global_spec['status'] = True
                  global_spec['completed_jobs'].append(global_spec['current_job'])
-                 global_spec['current_job'] = ''
+                 global_spec['current_job'] = {}
              else:
                  global_spec['status'] = False
                  global_spec['error'] = beekeeper_status['value']
@@ -191,4 +184,5 @@ def qrp_run_pipeline(self, run_job, global_spec):
      except Exception as e:
          global_spec['status'] = False
          global_spec['error'] =  str(e)
+         monitor_process_pipeline.delay(global_spec)  
          return run_job['PipelineName'] + ' : Exception error: ' + str(e)
