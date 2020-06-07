@@ -135,7 +135,7 @@ payload={
          }
        }       
     ]    
-  }
+  },
 
   "variation": {
     "flow":[

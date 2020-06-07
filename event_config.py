@@ -17,8 +17,8 @@ report_server = os.environ.get("REPORT_SERVER",
 report_exchange = os.environ.get("REPORT_EXCHANGE",
                                  file_config.get('report_exchange', 'report_exchange'))
 event_uri = os.environ.get("EVENT_URI",
-                           file_config.get('event_uri', 'http://ensprod-dev-01:7014/'))
+                           file_config.get('event_uri', 'http://production:5000/'))
 
-ES_HOST = os.environ.get('ES_HOST', file_config.get('es_host', 'ensprod-dev-01'))
-ES_PORT = os.environ.get('ES_PORT', file_config.get('es_port', '9200'))
+ES_HOST = os.environ.get('ES_HOST', file_config.get('es_host', 'es01'))
+ES_PORT = os.environ.get('ES_PORT', file_config.get('es_port', '9400'))
 RELEASE = os.environ.get('ENS_RELEASE', file_config.get('ens_release', '101'))

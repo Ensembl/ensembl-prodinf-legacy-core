@@ -6,9 +6,9 @@ config_file_path = os.environ.get('EVENT_CELERY_CONFIG_PATH')
 file_config = load_config_yaml(config_file_path)
 
 broker_url = os.environ.get("CELERY_BROKER_URL",
-                            file_config.get('celery_broker_url', 'pyamqp://qrp:qrp@localhost:5672/qrp')) #need to configure for repective server. virtualhost and ques are defined in dev server  
+                            file_config.get('celery_broker_url', 'pyamqp://qrp:qrp@ensrabbitmq:5672/qrp')) #need to configure for repective server. virtualhost and ques are defined in dev server
 result_backend = os.environ.get("CELERY_RESULT_BACKEND",
-                                file_config.get('celery_result_backend', 'rpc://qrp:qrp@localhost:5672/qrp'))
+                                file_config.get('celery_result_backend', 'rpc://qrp:qrp@ensrabbitmq:5672/qrp'))
 smtp_server = os.environ.get("SMTP_SERVER",
                              file_config.get('smtp_server', 'localhost'))
 from_email_address = os.environ.get("FROM_EMAIL_ADDRESS",
