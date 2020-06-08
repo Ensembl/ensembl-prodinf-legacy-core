@@ -11,9 +11,9 @@
            "PipeConfig": "Bio::EnsEMBL::Production::Pipeline::PipeConfig::CoreStatistics_conf",
            "PipeParams": {
              "params": {
-               "-registry": "registry.reg",
-               "-species" : "{{species if species else 'vertebrates, metazoa, fungi, protists, plants' }}" ,
-               "-division": "{{ division if division else '' }}",
+               "-registry": "/homes/ensprod/vinay_test/vinay.reg",
+               "-species" : "{{species if species else '' }}" ,
+               "-division": "{{ division if division else 'vertebrates,metazoa,fungi,protists,plants' }}",
                "-skip_metadata_check": 1,
                "-run_all": 1
              },

@@ -7,7 +7,8 @@ from ensembl_prodinf.event_celery_app import app
 from ensembl_prodinf.event_client import EventClient
 from sqlalchemy.engine.url import make_url
 from ensembl_prodinf.event_client import QrpClient
-from ensembl.qrp.start_pipeline import RemoteCmd
+#from ensembl.qrp.start_pipeline import RemoteCmd
+from ensembl.production.workflow.monitor import RemoteCmd
 from ensembl.qrp.util import construct_pipeline
 from ensembl.qrp.payload import payload
 from ensembl.qrp.es import PipelineStatus
@@ -115,6 +116,7 @@ def initiate_pipeline(spec, event={}, rerun=False):
              qrp_clinet.update_record(spec)
          else:
              qrp_clinet.insert_record(spec)
+
          monitor_process_pipeline.delay(spec)
          return {'status': True, 'error': ''}
      except Exception as e:
@@ -127,6 +129,7 @@ def initiate_pipeline(spec, event={}, rerun=False):
 def monitor_process_pipeline(self, spec):
      """Process the each pipeline object declared in flow"""
      try:
+
          if  spec.get('status', False):
              if len(spec.get('flow',[])) > 0:
                  job = spec['flow'].pop(0)
@@ -134,7 +137,7 @@ def monitor_process_pipeline(self, spec):
                  spec['job_status'] = 'inprogress'
                  #pipeline_status.insert_record(spec)
                  qrp_clinet.update_record(spec)
-                 #qrp_run_pipeline.delay(job, spec)
+                 qrp_run_pipeline.delay(job, spec)
 
              elif  len(spec.get('flow', [])) == 0:
                  spec['job_status'] = 'done'

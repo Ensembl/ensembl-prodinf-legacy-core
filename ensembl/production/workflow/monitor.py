@@ -29,8 +29,8 @@ class RemoteCmd():
 
     def __init__(self, **args):
         self.REMOTE_HOST = args.get('remote_host', "noah-login-01")
-        self.ADDRESS = args.get('address', 'noah-login-01')  # Address of your server
-        self.USER = args.get('user', 'ensprod')  # Username
+        self.ADDRESS = args.get('address', '10.7.95.60')  # Address of your server
+        self.USER = args.get('user', 'vinay')  # Username
         self.PASSWORD = args.get('pass', '')  # That's amazing I got the same combination on my luggage!
         self.WORKING_DIR = args.get('pwd', '/homes/ensprod/vinay_test/covid')  # Your working directory
         self.mysql_url = args.get('mysql_url', None)  # hive database string
