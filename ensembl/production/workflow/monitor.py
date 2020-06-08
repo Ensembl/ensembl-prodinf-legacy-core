@@ -71,7 +71,7 @@ class RemoteCmd():
             print("Exitcode  : %s" % (myjob.exit_code))
             if myjob.exit_code != 0:
                 return {'status': False, 'state': myjob.state,
-                        'error': 'Failed to ru nthe job check stderr:' + jd.working_directory}
+                        'error': 'Failed to run the job check stderr:' + jd.working_directory}
 
             return {'status': True, 'error': '', 'state': myjob.state}
         except Exception as e:

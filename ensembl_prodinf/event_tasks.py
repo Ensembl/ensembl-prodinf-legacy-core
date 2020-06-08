@@ -11,6 +11,7 @@ from ensembl.qrp.start_pipeline import RemoteCmd
 from ensembl.qrp.util import construct_pipeline
 from ensembl.qrp.payload import payload
 from ensembl.qrp.es import PipelineStatus
+from ensembl.production.workflow.dispatcher import WorkflowDispatcher
 
 
 import event_config as cfg
@@ -87,26 +88,29 @@ def parse_db_infos(database):
 
 def prepare_payload(spec):
     """Prepare payload to run production pipeline"""
-    src_url = make_url(spec['src_uri'])
-    (db_prefix, db_type, release, assembly) = parse_db_infos(src_url.database)
-    if db_type == 'core':
-       return payload['core'] 
-    
-    return {} 
+    try:
+        src_url = make_url(spec['src_uri'])
+        (db_prefix, db_type, release, assembly) = parse_db_infos(src_url.database)
+        workflow = WorkflowDispatcher(db_type)
+        return workflow.create_template(spec, db_type)
+    except Exception as e:
+        return {}
+
 
 def initiate_pipeline(spec, event={}, rerun=False):
      """Initiates the qrp pipelines for given payload """
-     #prepare the payload with production pipelines based on dbtype and division
-     spec.update(prepare_payload(spec))
+
      try:
+
+         # prepare the payload with production pipelines based on dbtype and division
+         spec.update(prepare_payload(spec))
+         # spec = prepare_payload(spec)
+
          if 'flow' not in spec:
              raise('Flow is not defined')
 
-         spec['status'] = True
-         spec['completed_jobs'] = []
-         spec['current_job'] = {}
-         spec['error'] = ''
          spec['job_status'] = 'inprogress'
+
          if rerun:
              qrp_clinet.update_record(spec)
          else:
@@ -130,7 +134,7 @@ def monitor_process_pipeline(self, spec):
                  spec['job_status'] = 'inprogress'
                  #pipeline_status.insert_record(spec)
                  qrp_clinet.update_record(spec)
-                 qrp_run_pipeline.delay(job, spec)
+                 #qrp_run_pipeline.delay(job, spec)
 
              elif  len(spec.get('flow', [])) == 0:
                  spec['job_status'] = 'done'

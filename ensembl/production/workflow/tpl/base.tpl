@@ -1,16 +1,17 @@
 {% block qrp %}
   {
-    "handover_token": {{ handover_token  if handover_token else '""' }},
-    "src_uri": {{ src_uri if src_uri else '""'}},
-    "status": "true",
-    "ENS_VERSION": {{ ENS_VERSION if ENS_VERSION else '""' }},
-    "EG_VERSION": {{ EG_VERSION if EG_VERSION else '""'}},
-    "contact": {{ contact if contact else '""' }},
-    "comment": {{ comment if comment else '""'}},
-    "user":  {{user if user else '""'}},
-
+    "handover_token": "{{ spec['handover_token']  if 'handover_token' in spec else '' }}",
+    "src_uri": "{{ spec['src_uri'] if 'src_uri' in spec else ''}}",
+    "status": true,
+    "completed_jobs": [],
+    "current_job" : {},
+    "error" : "",
+    "ENS_VERSION": "{{ spec['ENS_VERSION'] if 'ENS_VERSION' in spec else '' }}",
+    "EG_VERSION": "{{ spec['EG_VERSION'] if spec['EG_VERSION'] else ''}}",
+    "contact": "{{ spec['contact'] if 'contact' in spec else '' }}",
+    "comment": "{{ spec['comment'] if 'comment' in spec else ''}}",
+    "user":  "{{spec['user'] if 'user' in spec else ''}}",  {# remember the , #}
     {% block pipeline %}
-
     {% endblock pipeline %}
  }
 {% endblock qrp %}
