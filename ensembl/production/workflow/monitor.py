@@ -58,7 +58,8 @@ class RemoteCmd():
             js = saga.job.Service('ssh://' + self.ADDRESS, session=self.session)
             myjob = js.create_job(jd)
             print("\n...starting job...\n")
-
+            print('HHHHHHHHHHHHHHHHHHHHHH')
+            print(args['args'])
             # Now we can start our job.
             myjob.run()
             print("Job ID    : %s" % (myjob.id))

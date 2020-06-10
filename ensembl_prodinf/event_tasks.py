@@ -9,7 +9,8 @@ from sqlalchemy.engine.url import make_url
 from ensembl_prodinf.event_client import QrpClient
 #from ensembl.qrp.start_pipeline import RemoteCmd
 from ensembl.production.workflow.monitor import RemoteCmd
-from ensembl.qrp.util import construct_pipeline
+from ensembl.production.workflow.hive import construct_pipeline
+#from ensembl.qrp.util import construct_pipeline
 from ensembl.qrp.payload import payload
 from ensembl.qrp.es import PipelineStatus
 from ensembl.production.workflow.dispatcher import WorkflowDispatcher
@@ -93,7 +94,7 @@ def prepare_payload(spec):
         src_url = make_url(spec['src_uri'])
         (db_prefix, db_type, release, assembly) = parse_db_infos(src_url.database)
         workflow = WorkflowDispatcher(db_type)
-        return workflow.create_template(spec, db_type)
+        return workflow.create_template(spec, species='anopheles_gambiae')
     except Exception as e:
         return {}
 
@@ -173,6 +174,7 @@ def qrp_run_pipeline(self, run_job, global_spec):
              job = exece.run_job(command=' '.join(temp['beekeeper']['command']),
                                   args=temp['beekeeper']['args'], stdout=temp['beekeeper']['stdout'], stderr=temp['beekeeper']['stderr'])
              beekeeper_status = exece.beekeper_status()
+             print('HIIIIIIIII')
              print(job)
              if beekeeper_status['status'] and beekeeper_status['value'] == 'NO_WORK':
                  global_spec['status'] = True

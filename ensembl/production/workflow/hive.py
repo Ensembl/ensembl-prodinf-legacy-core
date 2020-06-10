@@ -9,6 +9,14 @@ def construct_pipeline(job, spec):
 
     # for init pipeline
     for key, value in job['PipeParams']['params'].items():
+
+        if key == '-division' or key == '-species':
+            for each_item in value.split(','):
+                if each_item:
+                    temp['init']['args'].append(key)
+                    temp['init']['args'].append(each_item)
+            continue
+
         temp['init']['args'].append(key)
         temp['init']['args'].append(value)
 

@@ -18,10 +18,16 @@
                "-run_all": 1
              },
              "arguments":[],
-             "environ":{ }
+             "environ":{
+                "ENS_VERSION": "100"
+              }
            }
         }
       {% endblock coreStat %}
+      {% block proteinFeature %}
+
+      {% endblock proteinFeature %}
+
 
       ]
     {% endblock flow %}
