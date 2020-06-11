@@ -32,6 +32,6 @@ class WorkflowDispatcher():
 
 
 
-obj = WorkflowDispatcher('core')
-flow = obj.create_template({'handover_token': ''}, division='plants')
-print(flow)
+#obj = WorkflowDispatcher('core')
+#flow = obj.create_template({'handover_token': ''}, division='plants')
+#print(flow)
