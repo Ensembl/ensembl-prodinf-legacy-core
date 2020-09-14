@@ -32,7 +32,7 @@
                     "-pipeline_dir": "/hps/nobackup2/production/ensembl/ensprod/temp/protein_features",
                     "-antispecies": "homo_sapiens",
                     "-interpro_desc_source": "core_dbs",
-                    "pipeline_name": "rr_protein_features_{{ species }}_{{ spec['ENS_VERSION'] }}",
+                    "-pipeline_name": "rr_protein_features_{{ species }}_{{ spec['ENS_VERSION'] }}",
                     "-interpro_desc_source": "core_dbs",
                     "-interproscan_version": {{ env['INTERPRO_VERSION'] }},
                     "-skip_checksum_loading": 1
