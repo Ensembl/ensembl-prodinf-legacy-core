@@ -34,7 +34,7 @@
                     "-interpro_desc_source": "core_dbs",
                     "pipeline_name": "rr_protein_features_{{ species }}_{{ spec['ENS_VERSION'] }}",
                     "-interpro_desc_source": "core_dbs",
-                    "-interproscan_spec['ENS_VERSION']": {{ env['INTERPRO_VERSION'] }},
+                    "-interproscan_version": {{ env['INTERPRO_VERSION'] }},
                     "-skip_checksum_loading": 1
                 },
                 "arguments": [],
