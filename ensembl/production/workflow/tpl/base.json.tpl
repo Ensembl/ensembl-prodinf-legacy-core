@@ -19,7 +19,7 @@
     "user":  "{{ spec['user'] if 'user' in spec else '' }}",  {# remember the , #}
     "flow" : [
     {% block flow %}
-    {% endblock %}
+    {% endblock flow %}
     ]
 }
 {% endblock %}
