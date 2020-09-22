@@ -10,7 +10,7 @@
                     "-registry": "/nfs/panda/ensembl/production/registries/st5-w.pm",
                     {{ pipe_param('species', species) }}
                     {{ pipe_param('division', division)  }}
-                    "pipeline_name": "rr_core_stats_{{ species }}_{{ spec['ENS_VERSION'] }}",
+                    "-pipeline_name": "rr_core_stats_{{ species }}_{{ spec['ENS_VERSION'] }}",
                     "-skip_metadata_check": 1,
                 },
                 "arguments":[],
