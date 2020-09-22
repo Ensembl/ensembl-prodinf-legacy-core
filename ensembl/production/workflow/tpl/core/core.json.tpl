@@ -64,5 +64,5 @@
                 "environ": {}
             }
         }
-    {% endblock proteinFeature %}
+    {% endblock FTPDumps %}
 {% endblock flow %}
