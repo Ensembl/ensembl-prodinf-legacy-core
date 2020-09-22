@@ -1,7 +1,7 @@
 {% macro pipe_param(tag, values=None) %}
     {% if values %}
         "-{{ tag }}" : "{{ values }}",
-    {% endblock %}
+    {% endif %}
 {% endmacro %}
 
 {% block main %}
