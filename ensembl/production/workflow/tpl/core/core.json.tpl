@@ -19,7 +19,7 @@
                 }
             }
         },
-    {% endblock coreStat %}
+    {% endblock coreStats %}
     {% block proteinFeature %}
         {
             "PipelineName": "ProteinFeatures",
@@ -54,7 +54,7 @@
                     "-release": {{ env['ENS_VERSION'] }},
                     {{ pipe_param('species', species) }}
                     {{ pipe_param('division', division)  }}
-                    "-ftp_dir": "/hps/nobackup2/production/ensembl/ensprod/release_dumps/rapid-release-{{ env['RR_VERSION'] }}/",
+                    "-ftp_dir": "/hps/nobackup2/production/ensembl/ensprod/release_dumps/rapid-release-{{ env['RR_VERSION'] }} ",
                     "-skip_metadata_check": 1,
                     "-abinitio": 0,
                     "-skip_convert_fasta": 1,
